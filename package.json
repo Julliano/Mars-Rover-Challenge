@@ -1,0 +1,25 @@
+{
+  "name": "mars-rover-challenge",
+  "version": "1.0.0",
+  "description": "A Mars Rover coding exercise",
+  "main": "app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julliano/Mars-Rover-Challenge.git"
+  },
+  "author": "Julliano Volpato Osorio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Julliano/Mars-Rover-Challenge/issues"
+  },
+  "homepage": "https://github.com/Julliano/Mars-Rover-Challenge#readme",
+  "dependencies": {
+    "jasmine-node": "^3.0.0",
+    "node": "^14.17.3",
+    "q": "^1.5.1"
+  }
+}
