@@ -1,32 +1,32 @@
-const { DIRECTIONS } = require('./utils/contants');
+const { ORIENTATION } = require('./utils/contants');
 
-const { in: inputDirections } = DIRECTIONS;
+const { in: inputOrientation } = ORIENTATION;
 
 const directions = {
     north: {
-        left: inputDirections['W'],
-        right: inputDirections['E'],
+        left: inputOrientation['W'],
+        right: inputOrientation['E'],
         move: function () {
             this._y++;
         }
     },
     south: {
-        left: inputDirections['E'],
-        right: inputDirections['W'],
+        left: inputOrientation['E'],
+        right: inputOrientation['W'],
         move: function () {
             this._y--;
         }
     },
     east: {
-        left: inputDirections['N'],
-        right: inputDirections['S'],
+        left: inputOrientation['N'],
+        right: inputOrientation['S'],
         move: function () {
             this._x++;
         }
     },
     west: {
-        left: inputDirections['S'],
-        right: inputDirections['N'],
+        left: inputOrientation['S'],
+        right: inputOrientation['N'],
         move: function () {
             this._x--;
         }
@@ -35,46 +35,46 @@ const directions = {
 
 /**
  * Creates a single mars rover
- * @param direction The direction object the rover is facing
+ * @param orientation The orientation the rover is facing
  * @param x The x coordinate of the rover
  * @param y The y coordinate of the rover
  * @constructor
  */
 class Rover {
-    constructor(direction, x, y) {
-        this._direction = direction;
+    constructor(orientation, x, y) {
+        this._orientation = orientation;
         this._x = x;
         this._y = y;
     }
 
     turnLeft() {
-        this._direction = directions[this._direction].left;
+        this._orientation = directions[this._orientation].left;
     }
 
     turnRight() {
-        this._direction = directions[this._direction].right;
+        this._orientation = directions[this._orientation].right;
     }
 
     move() {
-        directions[this._direction].move.call(this);
+        directions[this._orientation].move.call(this);
     }
 
     /**
      * Simulate a move in advance returning the projected position
-     * @returns {{x, y}}
+     * @returns {{x, y}} for projected position
      */
     checkPosition() {
         const x = this._x;
         const y = this._y;
-        directions[this._direction].move.call(this);
+        directions[this._orientation].move.call(this);
         const projectedPosition = this.getPosition();
         this._x = x;
         this._y = y;
         return projectedPosition;
     }
 
-    getDirection() {
-        return this._direction;
+    getOrientation() {
+        return this._orientation;
     }
 
     getPosition() {

@@ -1,4 +1,4 @@
-const DIRECTIONS = {
+const ORIENTATION = {
     out: {
         north: 'N',
         south: 'S',
@@ -22,6 +22,6 @@ const MOVES = {
 };
 
 module.exports = {
-    DIRECTIONS,
+    ORIENTATION,
     MOVES
 };

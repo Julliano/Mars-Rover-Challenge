@@ -29,7 +29,7 @@ class Plateau {
     }
 
     /**
-     * Checks a position against the boundaries of the plateau and other rovers
+     * Checks a position against the boundaries of the plateau and other rovers position
      * @param x
      * @param y
      * @param roverId The current rover id
@@ -40,7 +40,7 @@ class Plateau {
         return isOnPlateau(x, y, this._x, this._y) && !isColliding(x, y, this._rovers, roverId);
     }
 
-    moveRover(roverId, action) {
+    executeDirections(roverId, action) {
         const rover = this._rovers[roverId];
 
         if (action === inputMoves['L']) {

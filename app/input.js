@@ -1,12 +1,14 @@
 const { readFile } = require('fs');
-const { defer } = require('q');
-
 const Plateau = require('./plateau');
 const Rover = require('./rover');
-const { DIRECTIONS, MOVES } = require('./utils/contants');
+const { ORIENTATION, MOVES } = require('./utils/contants');
 
-const { in: inputDirections } = DIRECTIONS;
+const { in: inputOrientation } = ORIENTATION;
 const { in: inputMovements } = MOVES;
+
+// Removing first 2 args (as it will always be node and index.js file) then merge all into one
+// Big string and split each by Rover as a delimiter creating the same input structure as if using .txt file
+const parseArgs = args => args.slice(2).join(' ').split(/(?=Rover)/g).join('\n')
 
 // Logic to remove prefix before the commands itself as they follow a standart
 const removePrefix = commands => commands.split('\n').map(line => line.split(":").pop()).join('\n');
@@ -15,85 +17,80 @@ const removePrefix = commands => commands.split('\n').map(line => line.split(":"
  * Process the input text file or command line and reject on error
  * @returns {*|promise}
  */
-const getInput = () => {
-    const deferred = defer();
+const startMission = () => {
+    return new Promise((resolve, reject) => {
+        if (process.argv.length > 2) {
+            try {
+                const args = parseArgs(process.argv);
 
-    // If more than 3 args are given it will be treated as a command line arguments
-    // Otherwise the input.txt file will be read to start the process
-    if (process.argv.length > 2) {
-        try {
-            // Removing first 2 args (as it will always be node and index.js file) then merge all into one
-            // Big string and split each by Rover as a delimiter creating the same input structure as if using txt file
-            const args = process.argv.slice(2).join(' ').split(/(?=Rover)/g).join('\n');
-            deferred.resolve(inputParser(removePrefix(args)));
-        } catch (error) {
-            console.log('Error processing command line inputs', error);
-            deferred.reject();
-        }
-    } else {
-        readFile('./input.txt', 'utf8', (error, data) => {
-            if (error) {
-                console.log(error);
-                deferred.reject();
-            } else {
-                try {
-                    deferred.resolve(inputParser(removePrefix(data)));
-                } catch (error) {
-                    console.log('Error processing file input', error);
-                    deferred.reject();
-                }
+                resolve(inputParser(removePrefix(args)));
+            } catch (error) {
+                console.log('Error processing command line inputs', error);
+                reject(error);
             }
-        });
-    }
-
-    return deferred.promise;
+        } else {
+            readFile('./input.txt', 'utf8', (error, data) => {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                } else {
+                    try {
+                        resolve(inputParser(removePrefix(data)));
+                    } catch (error) {
+                        console.log('Error processing file input', error);
+                        reject(error);
+                    }
+                }
+            });
+        }
+    });
 }
 
 /**
- * Turn initial input (by file or command line) into a set of rovers and a map
+ * Turn initial input (by file or command line) into a set of rovers and a plateau
  * @param data The input string
  */
 const inputParser = data => {
     const lines = data.trim().split('\n');
-    const map = setupPlateau(lines.shift());
+    const plateauBounds = establishBounds(lines.shift());
     const roverPlans = [];
 
     while (lines.length > 0) {
         roverPlans.push({
-            rover: setupRover(lines.shift()),
+            rover: createRovers(lines.shift()),
             moves: setupMoves(lines.shift())
         });
     }
 
     return {
-        map: map,
+        plateau: plateauBounds,
         roverPlans: roverPlans
     };
 }
 
-const setupPlateau = plateauLine => {
+const establishBounds = plateauLine => {
     const [ widthLimit, heightLimit ] = plateauLine.split(' ');
     const width = parseInt(widthLimit, 10);
     const height = parseInt(heightLimit, 10);
 
     if (isNaN(width) || isNaN(height)) {
-        throw new Error('Map not valid, please fix the input data.')
+        throw new Error('Plateau not valid, please fix the input data.')
     }
 
     return new Plateau(width, height);
 }
 
-const setupRover = roverLine => {
-    const [ xAxis, yAxis, initDirection ] = roverLine.trim().split(' ');
+const createRovers = roverLine => {
+    const [ xAxis, yAxis, initOrientation ] = roverLine.trim().split(' ');
     const x = parseInt(xAxis, 10);
     const y = parseInt(yAxis, 10);
-    const direction = inputDirections[initDirection];
+    const orientation = inputOrientation[initOrientation];
 
-    if (isNaN(x) || isNaN(y) || typeof direction === 'undefined') {
+    if (isNaN(x) || isNaN(y) || typeof orientation === 'undefined') {
        throw new Error('Rover definition not valid, please fix the input data');
     }
 
-    return new Rover(direction, x, y);
+    return new Rover(orientation, x, y);
 }
 
 const setupMoves = movesLine => {
@@ -106,4 +103,9 @@ const setupMoves = movesLine => {
    });
 }
 
-module.exports = { getInput };
+module.exports = {
+    startMission,
+    _inputParser: inputParser,
+    _removePrefix: removePrefix,
+    _parseArgs: parseArgs
+};

@@ -1,35 +1,33 @@
-const { getInput } = require('./input');
-const { DIRECTIONS } = require('./utils/contants');
+const { startMission } = require('./input');
+const { ORIENTATION } = require('./utils/contants');
 
-const { out: outputDirections } = DIRECTIONS;
+const { out: outputOrientation } = ORIENTATION;
 
 const finalOutput = rovers => {
     let output = '';
 
-    rovers.map((rover, index) => {
-        const direction = rover.getDirection();
-        const position = rover.getPosition();
-        output += `Rover${index+1}:${position.x} ${position.y} ${outputDirections[direction]} \n`;
+    rovers.forEach((rover, index) => {
+        const direction = rover.getOrientation();
+        const { x, y } = rover.getPosition();
+        output += `Rover${index+1}:${x} ${y} ${outputOrientation[direction]} \n`;
     });
 
     return output;
 }
 
-getInput().then(data => {
-    const map = data.map;
-    const roverPlans = data.roverPlans;
+startMission().then(data => {
+    const { plateau, roverPlans } = data;
     const rovers = [];
 
     roverPlans.forEach(roverPlan => {
         try {
-            const rover = roverPlan.rover;
-            const moves = roverPlan.moves;
+            const { rover, moves } = roverPlan;
             rovers.push(rover);
 
-            const roverId = map.addRover(rover);
+            const roverId = plateau.addRover(rover);
 
-            moves.forEach(function (move) {
-                map.moveRover(roverId, move);
+            moves.forEach(move => {
+                plateau.executeDirections(roverId, move);
             });
 
         } catch (error) {
