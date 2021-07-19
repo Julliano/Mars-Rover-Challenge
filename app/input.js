@@ -17,7 +17,7 @@ const removePrefix = commands => commands.split('\n').map(line => line.split(":"
  * Process the input text file or command line and reject on error
  * @returns {*|promise}
  */
-const startMission = () => {
+const loadInput = () => {
     return new Promise((resolve, reject) => {
         if (process.argv.length > 2) {
             try {
@@ -52,7 +52,7 @@ const startMission = () => {
  */
 const inputParser = data => {
     const lines = data.trim().split('\n');
-    const plateauBounds = establishBounds(lines.shift());
+    const plateau = establishBounds(lines.shift());
     const roverPlans = [];
 
     while (lines.length > 0) {
@@ -63,8 +63,8 @@ const inputParser = data => {
     }
 
     return {
-        plateau: plateauBounds,
-        roverPlans: roverPlans
+        plateau,
+        roverPlans
     };
 }
 
@@ -104,7 +104,7 @@ const setupMoves = movesLine => {
 }
 
 module.exports = {
-    startMission,
+    loadInput,
     _inputParser: inputParser,
     _removePrefix: removePrefix,
     _parseArgs: parseArgs

@@ -28,7 +28,7 @@ describe('Plateau', function () {
     it('should validate a valid posistion', () => {
         const plateau = new Plateau(2, 2);
 
-        expect(plateau._isValidPosition(2, 2)).toEqual(true);
+        expect(plateau.isValidPosition(2, 2)).toEqual(true);
     });
 
     it('should invalidate a position if colliding with another rover', () => {
@@ -36,14 +36,14 @@ describe('Plateau', function () {
         const rover = new Rover('east', 1, 1);
 
         plateau.addRover(rover);
-        expect(plateau._isValidPosition(1, 1)).toEqual(false);
+        expect(plateau.isValidPosition(1, 1)).toEqual(false);
     });
 
     it('should invalidate any position given if outside plateau`s boundaries', () => {
         const plateau = new Plateau(2, 2);
 
-        expect(plateau._isValidPosition(3, 2)).toEqual(false);
-        expect(plateau._isValidPosition(2, 3)).toEqual(false);
+        expect(plateau.isValidPosition(3, 2)).toEqual(false);
+        expect(plateau.isValidPosition(2, 3)).toEqual(false);
     });
 
     it('should move the rover to a valid position', () => {

@@ -19,7 +19,7 @@ class Plateau {
     addRover(rover) {
         const roverPosition = rover.getPosition();
 
-        if (this._isValidPosition(roverPosition.x, roverPosition.y)) {
+        if (this.isValidPosition(roverPosition.x, roverPosition.y)) {
             const roverId = this._roverId++;
             this._rovers[roverId] = rover;
             return roverId;
@@ -34,9 +34,8 @@ class Plateau {
      * @param y
      * @param roverId The current rover id
      * @returns {*|boolean}
-     * @private
      */
-    _isValidPosition(x, y, roverId) {
+    isValidPosition(x, y, roverId) {
         return isOnPlateau(x, y, this._x, this._y) && !isColliding(x, y, this._rovers, roverId);
     }
 
@@ -49,7 +48,7 @@ class Plateau {
             rover.turnRight();
         } else if (action === inputMoves['M']) {
             const projectedMove = rover.checkPosition();
-            if (this._isValidPosition(projectedMove.x, projectedMove.y, roverId)) {
+            if (this.isValidPosition(projectedMove.x, projectedMove.y, roverId)) {
                 rover.move();
             } else {
                 throw new Error('The moving action requested is to a invalid position');

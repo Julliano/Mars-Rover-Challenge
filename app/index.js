@@ -1,9 +1,9 @@
-const { startMission } = require('./input');
+const { loadInput } = require('./input');
 const { ORIENTATION } = require('./utils/contants');
 
 const { out: outputOrientation } = ORIENTATION;
 
-const finalOutput = rovers => {
+const missionOutput = rovers => {
     let output = '';
 
     rovers.forEach((rover, index) => {
@@ -15,26 +15,29 @@ const finalOutput = rovers => {
     return output;
 }
 
-startMission().then(data => {
+const startMission = async() => {
+    const data = await loadInput();
+
     const { plateau, roverPlans } = data;
     const rovers = [];
 
     roverPlans.forEach(roverPlan => {
         try {
             const { rover, moves } = roverPlan;
-            rovers.push(rover);
-
             const roverId = plateau.addRover(rover);
+
+            rovers.push(rover);
 
             moves.forEach(move => {
                 plateau.executeDirections(roverId, move);
             });
-
         } catch (error) {
             rovers.pop();
             console.log(error);
         }
     });
 
-    console.log(finalOutput(rovers));
-});
+    console.log(missionOutput(rovers));
+}
+
+startMission();
