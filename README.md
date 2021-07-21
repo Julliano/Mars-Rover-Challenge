@@ -5,13 +5,6 @@ Before being able to run start the mission you need to jump into the root folder
 After that a simple `npm start` will start the mission.
 Please check `INPUT` section to understand how inputs will be processed.
 
-## Timeline
-- 20 min structuring the project (thinking about libraries and folder structure)
-- 60 min to standarize inputs types
-- 250 min create all logic (plateau, rover, moves, output)
-- 140 min creating all tests
-- 20 min adding README description
-
 ### The Problem
 A squad of robotic rovers are to be landed by NASA on a plateau on Mars.
 
